@@ -21,6 +21,9 @@ class Location:
         self.name = name
         self.url = url
 
+    def __str__(self):
+        return f'Name:{self.name} url:{self.url}'
+
 
 class Locations(Enum):
     MARINA_RISHHA = Location(
