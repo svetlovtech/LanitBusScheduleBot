@@ -19,18 +19,18 @@ logging.basicConfig(
 class Location:
     def __init__(self, name: str, url: str):
         self.name = name
-        self.url = url
+        self.location_char = url
 
     def __str__(self):
-        return f'Name:{self.name} url:{self.url}'
+        return f'Name:{self.name} location_char:{self.location_char}'
 
 
 class Locations(Enum):
     MARINA_RISHHA = Location(
-        'Марьина роща', 'https://transport.lanit.ru/m/table')
+        'Марьина роща', 'm')
     PLOSHHAD_ILICHA = Location(
-        'Площадь Ильича', 'https://transport.lanit.ru/p/table')
-    RIZHSKAJA = Location('Рижская', 'https://transport.lanit.ru/r/table')
+        'Площадь Ильича', 'p')
+    RIZHSKAJA = Location('Рижская', 'r')
 
 
 class Destinations(Enum):
@@ -42,7 +42,7 @@ class LanitBusInfo:
     @staticmethod
     def get_schedule_info(location: Locations) -> dict:
         logging.info('Get schedule info started...')
-        response = requests.get(location.value.url)
+        response = requests.get(f'https://transport.lanit.ru/{location.value.location_char}/table')
 
         soup = BeautifulSoup(response.text, 'html.parser')
         tables: List[Tag] = soup.findAll("div", {"class": "col-xs-6"})
