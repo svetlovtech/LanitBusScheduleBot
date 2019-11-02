@@ -15,25 +15,30 @@ logging.basicConfig(
     ])
 
 
-class Destinations(Enum):
+class Locations(Enum):
     MARINA_RISHHA = 'https://transport.lanit.ru/m/table'
     PLOSHHAD_ILICHA = 'https://transport.lanit.ru/p/table'
     RIZHSKAJA = 'https://transport.lanit.ru/r/table'
 
 
+class Destinations(Enum):
+    TO_METRO = 1
+    TO_OFFICE = 2
+
+
 class LanitBusInfo:
     @staticmethod
-    def get_schedule_info(destinations: Destinations):
+    def get_schedule_info(location: Locations) -> dict:
         logging.info('Get schedule info started...')
-        response = requests.get(destinations.value)
+        response = requests.get(location.value)
 
         soup = BeautifulSoup(response.text, 'html.parser')
         tables: List[Tag] = soup.findAll("div", {"class": "col-xs-6"})
         schedule_data = {}
         for table in tables:
-            destination_tag: Tag = table.find(
+            location_tag: Tag = table.find(
                 "div", {"class": "row text-center"})
-            destination_text = destination_tag.text.strip()
+            destination_text = location_tag.text.strip()
             time_data = re.findall('([0-9]{2}:[0-9]{2})', str(table))
             schedule_data[destination_text] = time_data
 
@@ -43,9 +48,9 @@ class LanitBusInfo:
 
 
 if __name__ == "__main__":
-    marina = LanitBusInfo.get_schedule_info(Destinations.MARINA_RISHHA)
+    marina = LanitBusInfo.get_schedule_info(Locations.MARINA_RISHHA)
     logging.info(f'marina {type(marina)} = {marina}')
-    ilicha = LanitBusInfo.get_schedule_info(Destinations.PLOSHHAD_ILICHA)
+    ilicha = LanitBusInfo.get_schedule_info(Locations.PLOSHHAD_ILICHA)
     logging.info(f'ilicha {type(ilicha)} = {ilicha}')
-    rizhskaja = LanitBusInfo.get_schedule_info(Destinations.RIZHSKAJA)
+    rizhskaja = LanitBusInfo.get_schedule_info(Locations.RIZHSKAJA)
     logging.info(f'rizhskaja {type(rizhskaja)} = {rizhskaja}')
