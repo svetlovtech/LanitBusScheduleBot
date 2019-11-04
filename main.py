@@ -10,7 +10,7 @@ import re
 import requests
 import telebot
 
-
+# -=-=-=-=-=-=-=-=-=-=- Config part -=-=-=-=-=-=-=-=-=-=-=-
 logging.basicConfig(
     level=logging.DEBUG,
     format="[%(asctime)s] %(levelname)-12s|process:%(process)-5s|thread:%(thread)-5s|funcName:%(funcName)s|message:%(message)s",
@@ -18,6 +18,11 @@ logging.basicConfig(
         # logging.FileHandler('fileName.log'),
         logging.StreamHandler()
     ])
+
+bot_token = 'token'
+time_delta_shift = 3
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
 class Location:
@@ -47,7 +52,7 @@ class LanitBusInfo:
     def get_formated_datetime_text() -> str:
         days = ["понедельник", "вторник", "среда",
                 "четверг", "пятница", "суббота", "воскресенье"]
-        current_datetime = datetime.now()
+        current_datetime = datetime.now() + timedelta(hours=time_delta_shift)
         formated_current_time = f'{str(current_datetime.hour).zfill(2)}:{str(current_datetime.minute).zfill(2)}'
         return f'Сейчас {days[datetime.today().weekday()]} {formated_current_time}'
 
@@ -57,7 +62,7 @@ class LanitBusInfo:
         response = requests.get(
             f'https://transport.lanit.ru/{location.value.location_char}/table')
 
-        current_datetime = datetime.now()
+        current_datetime = datetime.now() + timedelta(hours=time_delta_shift)
         soup = BeautifulSoup(response.text, 'html.parser')
         tables: List[Tag] = soup.findAll("div", {"class": "col-xs-6"})
         schedule_data = {}
@@ -87,7 +92,7 @@ class LanitBusInfo:
     @staticmethod
     def get_nearest_bus(location: Locations, destinations: Destinations) -> str:
         logging.info('Getting nearest bus started...')
-        current_datetime = datetime.now()
+        current_datetime = datetime.now() + timedelta(hours=time_delta_shift)
         if datetime.today().weekday() > 4:
             logging.info('Getting nearest bus completed')
             return f'{LanitBusInfo.get_formated_datetime_text()}. Сегодня маршруток {destinations.value} {location.value.name} не будет.'
@@ -109,7 +114,7 @@ class LanitBusInfo:
 
 
 # -=-=-=-=-=-=-=-=-=-=-=Telegram bot part=-=-=-=-=-=-=-=-=-=-=-
-bot = telebot.TeleBot('token')
+bot = telebot.TeleBot(bot_token)
 
 
 class Step(Enum):
