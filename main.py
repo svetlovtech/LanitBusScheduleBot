@@ -100,7 +100,7 @@ class LanitBusInfo:
                         time_difference = bus_datetime - current_datetime
                         time_difference_in_minutes = time_difference.total_seconds() / 60
                         logging.info('Getting nearest bus completed')
-                        return f'{LanitBusInfo.get_formated_datetime_text()}. Ближайшая маршрутка {destinations.value} {location.value.name} будет через {time_difference_in_minutes} минут в {formated_bus_time}'
+                        return f'{LanitBusInfo.get_formated_datetime_text()}. Ближайшая маршрутка {destinations.value} {location.value.name} будет через {int(time_difference_in_minutes)} минут в {formated_bus_time}'
                 logging.info('Getting nearest bus completed')
                 return f'{LanitBusInfo.get_formated_datetime_text()}. Сегодня маршруток {destinations.value} от {location.value.name} уже не будет.'
             else:
