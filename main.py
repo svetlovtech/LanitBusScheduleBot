@@ -1,15 +1,13 @@
+import logging
+import re
 from datetime import datetime
+from enum import Enum
+from typing import List
+import requests
+import telebot
 from bs4 import BeautifulSoup
 from bs4.element import Tag
-from typing import List
-from enum import Enum
 from telebot.types import ReplyKeyboardMarkup
-
-import telebot
-import logging
-import requests
-import json
-import re
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -88,7 +86,6 @@ class LanitBusInfo:
     def get_nearest_bus(location: Locations, destinations: Destinations) -> str:
         logging.info('Getting nearest bus started...')
         current_datetime = datetime.now()
-        formated_current_time = f'{current_datetime.hour}:{current_datetime.minute}'
         if datetime.today().weekday() > 4:
             logging.info('Getting nearest bus completed')
             return f'{LanitBusInfo.get_formated_datetime_text()}. Сегодня маршруток {destinations.value} {location.value.name} не будет.'
@@ -131,14 +128,22 @@ def select_location_step(message):
         if bot_session_data[message.from_user.id]["location"] is None:
             raise ValueError('Location is invalid')
         bot.reply_to(
-            message, f'Давай посмотрим когда будет маршрутка {bot_session_data[message.from_user.id]["destination"].value} от {bot_session_data[message.from_user.id]["location"].value.name}...')
+            message,
+            f'Давай посмотрим когда будет маршрутка {bot_session_data[message.from_user.id]["destination"].value} от {bot_session_data[message.from_user.id]["location"].value.name}...')
         bot.send_message(message.chat.id, LanitBusInfo.get_nearest_bus(
             location=bot_session_data[message.from_user.id]["location"],
             destinations=bot_session_data[message.from_user.id]["destination"]))
-    except ValueError as e:
+        bot.reply_to(message, 'Попробуем еще раз?', reply_markup=keyboard_after_all())
+    except ValueError:
         bot.reply_to(message, 'Не знаю такой локации :(')
-    except Exception as e:
+    except Exception:
         bot.send_message(message.chat.id, 'Кажется что-то пошло не так :(')
+
+
+def keyboard_after_all():
+    markup = ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    markup.add("/start")
+    return markup
 
 
 def select_destination_step(message):
@@ -153,9 +158,10 @@ def select_destination_step(message):
             message, f'Хорошо едем {destination.value}. А какое метро?', reply_markup=markup)
         bot.register_next_step_handler(
             location_message, select_location_step)
-    except ValueError as e:
+
+    except ValueError:
         bot.reply_to(message, 'Не знаю такого направления :(')
-    except Exception as e:
+    except Exception:
         bot.send_message(message.chat.id, 'Кажется что-то пошло не так :(')
 
 
@@ -166,19 +172,22 @@ def on_start(message):
             one_time_keyboard=True, resize_keyboard=True)
         for destination in Destinations:
             markup.add(destination.value)
-        bot.send_message(message.chat.id, 'Привет👋\nЭто перезапуск бота расписания маршруток компании ЛАНИТ 🚌\nРасписание только для г.Москва, ул.Мурманский проезд 14к1 🗓\nРасписание маршруток синхронизировано с https://transport.lanit.ru/')
+        bot.send_message(message.chat.id,
+                         'Привет👋\nЭто перезапуск бота расписания маршруток компании ЛАНИТ 🚌\nРасписание только для г.Москва, ул.Мурманский проезд 14к1 🗓\nРасписание маршруток синхронизировано с https://transport.lanit.ru/')
         destination_message = bot.reply_to(
             message, 'Куда поедем?', reply_markup=markup)
         bot_session_data[message.from_user.id] = {}
         bot.register_next_step_handler(
             destination_message, select_destination_step)
-    except Exception as e:
+
+    except Exception:
         bot.send_message(message.chat.id, 'Кажется что-то пошло не так :(')
 
 
 @bot.message_handler(commands=['help'])
 def send_welcome(message):
-    bot.send_message(message.chat.id, 'Если возникли проблемы с ботом или есть предложения по улучшению, то свяжитесь со мной @ASvetlov92.\nЕсли этот бот оказался полезен, то буду очень рад звездочке https://github.com/32-52/LanitBusScheduleBot')
+    bot.send_message(message.chat.id,
+                     'Если возникли проблемы с ботом или есть предложения по улучшению, то свяжитесь со мной @ASvetlov92.\nЕсли этот бот оказался полезен, то буду очень рад звездочке https://github.com/32-52/LanitBusScheduleBot')
 
 
 if __name__ == "__main__":
