@@ -1,13 +1,15 @@
-import logging
-import re
-from datetime import datetime
-from enum import Enum
-from typing import List
-import requests
-import telebot
+from telebot.types import ReplyKeyboardMarkup
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from bs4.element import Tag
-from telebot.types import ReplyKeyboardMarkup
+from typing import List
+from enum import Enum
+
+import logging
+import re
+import requests
+import telebot
+
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -133,7 +135,8 @@ def select_location_step(message):
         bot.send_message(message.chat.id, LanitBusInfo.get_nearest_bus(
             location=bot_session_data[message.from_user.id]["location"],
             destinations=bot_session_data[message.from_user.id]["destination"]))
-        bot.reply_to(message, 'Попробуем еще раз?', reply_markup=keyboard_after_all())
+        bot.reply_to(message, 'Попробуем еще раз?',
+                     reply_markup=keyboard_after_all())
     except ValueError:
         bot.reply_to(message, 'Не знаю такой локации :(')
     except Exception:
