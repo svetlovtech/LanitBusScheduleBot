@@ -63,7 +63,7 @@ class LanitBusInfo:
             f'https://transport.lanit.ru/{location.value.location_char}/table')
 
         current_datetime = datetime.now() + timedelta(hours=time_delta_shift)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'lxml')
         tables: List[Tag] = soup.findAll("div", {"class": "col-xs-6"})
         schedule_data = {}
         for table in tables:
