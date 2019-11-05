@@ -1,19 +1,20 @@
-from telebot.types import ReplyKeyboardMarkup
-from datetime import datetime, timedelta
-from bs4 import BeautifulSoup
-from bs4.element import Tag
-from typing import List
-from enum import Enum
-
 import logging
 import re
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import List
+
 import requests
 import telebot
+from bs4 import BeautifulSoup
+from bs4.element import Tag
+from telebot.types import ReplyKeyboardMarkup
 
 # -=-=-=-=-=-=-=-=-=-=- Config part -=-=-=-=-=-=-=-=-=-=-=-
 logging.basicConfig(
     level=logging.DEBUG,
-    format="[%(asctime)s] %(levelname)-12s|process:%(process)-5s|thread:%(thread)-5s|funcName:%(funcName)s|message:%(message)s",
+    format="[%(asctime)s] %(levelname)-12s|process:%(process)-5s|thread:%"
+           "(thread)-5s|funcName:%(funcName)s|message:%(message)s",
     handlers=[
         # logging.FileHandler('fileName.log'),
         logging.StreamHandler()
@@ -21,6 +22,7 @@ logging.basicConfig(
 
 bot_token = 'token'
 time_delta_shift = 3
+
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -95,7 +97,8 @@ class LanitBusInfo:
         current_datetime = datetime.now() + timedelta(hours=time_delta_shift)
         if datetime.today().weekday() > 4:
             logging.info('Getting nearest bus completed')
-            return f'{LanitBusInfo.get_formated_datetime_text()}. Сегодня маршруток {destinations.value} {location.value.name} не будет.'
+            return f'{LanitBusInfo.get_formated_datetime_text()}. Сегодня маршруток ' \
+                f'{destinations.value} {location.value.name} не будет.'
         else:
             schedule_data = LanitBusInfo.get_schedule_info(location)
             if len(schedule_data[destinations]) > 0:
@@ -105,12 +108,16 @@ class LanitBusInfo:
                         time_difference = bus_datetime - current_datetime
                         time_difference_in_minutes = time_difference.total_seconds() / 60
                         logging.info('Getting nearest bus completed')
-                        return f'{LanitBusInfo.get_formated_datetime_text()}. Ближайшая маршрутка {destinations.value} {location.value.name} будет через {int(time_difference_in_minutes)} минут в {formated_bus_time}'
+                        return f'{LanitBusInfo.get_formated_datetime_text()}. Ближайшая маршрутка' \
+                            f' {destinations.value} {location.value.name} будет через' \
+                            f' {int(time_difference_in_minutes)} минут в {formated_bus_time}'
                 logging.info('Getting nearest bus completed')
-                return f'{LanitBusInfo.get_formated_datetime_text()}. Сегодня маршруток {destinations.value} от {location.value.name} уже не будет.'
+                return f'{LanitBusInfo.get_formated_datetime_text()}. Сегодня маршруток {destinations.value}' \
+                    f' от {location.value.name} уже не будет.'
             else:
                 logging.info('Getting nearest bus completed')
-                return f'{LanitBusInfo.get_formated_datetime_text()}. К сожалению не удалось получить расписание маршруток {destinations.value} {location.value.name}.'
+                return f'{LanitBusInfo.get_formated_datetime_text()}. К сожалению не удалось получить расписание' \
+                    f' маршруток {destinations.value} {location.value.name}.'
 
 
 # -=-=-=-=-=-=-=-=-=-=-=Telegram bot part=-=-=-=-=-=-=-=-=-=-=-
@@ -136,16 +143,18 @@ def select_location_step(message):
             raise ValueError('Location is invalid')
         bot.reply_to(
             message,
-            f'Давай посмотрим когда будет маршрутка {bot_session_data[message.from_user.id]["destination"].value} от {bot_session_data[message.from_user.id]["location"].value.name}...')
+            f'Давай посмотрим когда будет маршрутка {bot_session_data[message.from_user.id]["destination"].value}'
+            f' от {bot_session_data[message.from_user.id]["location"].value.name}...')
         bot.send_message(message.chat.id, LanitBusInfo.get_nearest_bus(
             location=bot_session_data[message.from_user.id]["location"],
             destinations=bot_session_data[message.from_user.id]["destination"]))
-        bot.reply_to(message, 'Попробуем еще раз?',
-                     reply_markup=keyboard_after_all())
+        bot.reply_to(message, 'Попробуем еще раз?', reply_markup=keyboard_after_all())
     except ValueError:
         bot.reply_to(message, 'Не знаю такой локации :(')
+        bot.send_message(message, 'Попробуем еще раз?', reply_markup=keyboard_after_all())
     except Exception:
         bot.send_message(message.chat.id, 'Кажется что-то пошло не так :(')
+        bot.send_message(message.chat.id, 'Попробуем еще раз?', reply_markup=keyboard_after_all())
 
 
 def keyboard_after_all():
@@ -181,7 +190,9 @@ def on_start(message):
         for destination in Destinations:
             markup.add(destination.value)
         bot.send_message(message.chat.id,
-                         'Привет👋\nЭто перезапуск бота расписания маршруток компании ЛАНИТ 🚌\nРасписание только для г.Москва, ул.Мурманский проезд 14к1 🗓\nРасписание маршруток синхронизировано с https://transport.lanit.ru/')
+                         'Привет👋\nЭто перезапуск бота расписания маршруток компании'
+                         ' ЛАНИТ 🚌\nРасписание только для г.Москва, ул.Мурманский проезд 14к1'
+                         ' 🗓\nРасписание маршруток синхронизировано с https://transport.lanit.ru/')
         destination_message = bot.reply_to(
             message, 'Куда поедем?', reply_markup=markup)
         bot_session_data[message.from_user.id] = {}
@@ -192,10 +203,17 @@ def on_start(message):
         bot.send_message(message.chat.id, 'Кажется что-то пошло не так :(')
 
 
+@bot.message_handler(func=lambda message: True)
+def echo_message(message):
+    bot.reply_to(message, 'Не могу найти такую команду :(\nПопробуйте /start')
+
+
 @bot.message_handler(commands=['help'])
 def send_welcome(message):
     bot.send_message(message.chat.id,
-                     'Если возникли проблемы с ботом или есть предложения по улучшению, то свяжитесь со мной @ASvetlov92.\nЕсли этот бот оказался полезен, то буду очень рад звездочке https://github.com/32-52/LanitBusScheduleBot')
+                     'Если возникли проблемы с ботом или есть предложения по улучшению, то свяжитесь со мной'
+                     ' @ASvetlov92.\nЕсли этот бот оказался полезен, то буду очень рад звездочке'
+                     ' https://github.com/32-52/LanitBusScheduleBot')
 
 
 if __name__ == "__main__":
