@@ -3,7 +3,7 @@ import re
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import List
-
+import os
 import pymorphy2
 import requests
 import telebot
@@ -22,8 +22,11 @@ logging.basicConfig(
         logging.StreamHandler()
     ])
 
-bot_token = '752146011:AAGHdz3w9Z98r3_UIhPUwjB-yjCdn7RjGsE'
-time_delta_shift = 0
+
+bot_token = 'token'
+if 'token' in bot_token:
+    bot_token = os.environ['TELEGRAM_TOKEN']
+time_delta_shift = 3
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -214,4 +217,9 @@ def send_welcome(message):
 
 
 if __name__ == "__main__":
-    bot.polling(none_stop=True)
+    while True:
+        try:
+            bot.polling(none_stop=True)
+        except Exception as e:
+            logging.warning(e)
+            continue
