@@ -1,32 +1,15 @@
-import logging
-import re
 from datetime import datetime, timedelta
-from enum import Enum
+from settings import logging
 from typing import List
-import os
-import requests
-import telebot
-from bs4 import BeautifulSoup
-from bs4.element import Tag
-from telebot import types
+from enum import Enum
+
 from telebot.types import ReplyKeyboardMarkup
+from telebot import types
+import telebot
 
-# -=-=-=-=-=-=-=-=-=-=- Config part -=-=-=-=-=-=-=-=-=-=-=-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="[%(asctime)s] %(levelname)-12s|process:%(process)-5s|thread:%"
-           "(thread)-5s|funcName:%(funcName)s|message:%(message)s",
-    handlers=[
-        # logging.FileHandler('fileName.log'),
-        logging.StreamHandler()
-    ])
-
-
-bot_token = 'token'
-if 'token' in bot_token:
-    bot_token = os.environ['TELEGRAM_TOKEN']
-time_delta_shift = 3
-
+import settings
+import requests
+import re
 
 
 def keyboard_after_all():
@@ -34,7 +17,8 @@ def keyboard_after_all():
     markup.add("/start")
     return markup
 
-bot = telebot.TeleBot(bot_token)
+
+bot = telebot.TeleBot(settings.bot_token)
 
 
 class Step(Enum):
@@ -47,38 +31,47 @@ class Step(Enum):
 def select_location_step(call):
     if call.data == "mainmenu":
         keyboardmain = types.InlineKeyboardMarkup(row_width=2)
-        first_button = types.InlineKeyboardButton(text="к метро", callback_data="metro")
-        second_button = types.InlineKeyboardButton(text="в офис", callback_data="office")
+        first_button = types.InlineKeyboardButton(
+            text="к метро", callback_data="metro")
+        second_button = types.InlineKeyboardButton(
+            text="в офис", callback_data="office")
         keyboardmain.add(first_button, second_button)
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Куда поедем?",
                               reply_markup=keyboardmain)
 
     if call.data == "metro":
         keyboard = types.InlineKeyboardMarkup()
-        rele1 = types.InlineKeyboardButton(text="Марьина роща", callback_data="m")
+        rele1 = types.InlineKeyboardButton(
+            text="Марьина роща", callback_data="m")
         rele2 = types.InlineKeyboardButton(text="Рижская", callback_data="r")
-        rele3 = types.InlineKeyboardButton(text="Площадь Ильича", callback_data="p")
-        backbutton = types.InlineKeyboardButton(text="назад", callback_data="mainmenu")
+        rele3 = types.InlineKeyboardButton(
+            text="Площадь Ильича", callback_data="p")
+        backbutton = types.InlineKeyboardButton(
+            text="назад", callback_data="mainmenu")
         keyboard.add(rele1, rele2, rele3, backbutton)
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                               text='Какое метро нужно?', reply_markup=keyboard)
 
     if call.data == "office":
         keyboard = types.InlineKeyboardMarkup()
-        rele1 = types.InlineKeyboardButton(text="Марьина роща", callback_data="m_o")
+        rele1 = types.InlineKeyboardButton(
+            text="Марьина роща", callback_data="m_o")
         rele2 = types.InlineKeyboardButton(text="Рижская", callback_data="r_o")
-        rele3 = types.InlineKeyboardButton(text="Площадь Ильича", callback_data="p_o")
-        backbutton = types.InlineKeyboardButton(text="назад", callback_data="mainmenu")
+        rele3 = types.InlineKeyboardButton(
+            text="Площадь Ильича", callback_data="p_o")
+        backbutton = types.InlineKeyboardButton(
+            text="назад", callback_data="mainmenu")
         keyboard.add(rele1, rele2, rele3, backbutton)
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                               text='С какого метро едем?', reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "m" or call.data == "r" or call.data == 'p' or
-                                              call.data == "m_o" or call.data == "r_o" or call.data == 'p_o')
+                            call.data == "m_o" or call.data == "r_o" or call.data == 'p_o')
 def select_destination_step_metro(call):
     keyboard = types.InlineKeyboardMarkup()
-    backbutton = types.InlineKeyboardButton(text="Попробовать еще раз", callback_data="mainmenu")
+    backbutton = types.InlineKeyboardButton(
+        text="Попробовать еще раз", callback_data="mainmenu")
     keyboard.add(backbutton)
 
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
@@ -92,10 +85,13 @@ def select_destination_step_metro(call):
 @bot.message_handler(commands=['start'])
 def on_start(message):
     keyboardmain = types.InlineKeyboardMarkup(row_width=2)
-    first_button = types.InlineKeyboardButton(text="к метро", callback_data="metro")
-    second_button = types.InlineKeyboardButton(text="в офис", callback_data="office")
+    first_button = types.InlineKeyboardButton(
+        text="к метро", callback_data="metro")
+    second_button = types.InlineKeyboardButton(
+        text="в офис", callback_data="office")
     keyboardmain.add(first_button, second_button)
-    bot.send_message(message.chat.id, "Куда поедем?", reply_markup=keyboardmain)
+    bot.send_message(message.chat.id, "Куда поедем?",
+                     reply_markup=keyboardmain)
 
 
 @bot.message_handler(func=lambda message: False if 'help' in message.text else True)
