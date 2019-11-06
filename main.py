@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from enum import Enum
 from typing import List
 
+import pymorphy2
 import requests
 import telebot
 from bs4 import BeautifulSoup
@@ -47,6 +48,12 @@ class Locations(Enum):
 class Destinations(Enum):
     TO_METRO = 'к метро'
     TO_OFFICE = 'в офис'
+
+
+def mint(word, number):
+    morph = pymorphy2.MorphAnalyzer()
+    text = morph.parse(word)[0]
+    return text.make_agree_with_number(number).word
 
 
 class LanitBusInfo:
@@ -108,9 +115,10 @@ class LanitBusInfo:
                         time_difference = bus_datetime - current_datetime
                         time_difference_in_minutes = time_difference.total_seconds() / 60
                         logging.info('Getting nearest bus completed')
+                        a = mint("минута", int(time_difference_in_minutes))
                         return f'{LanitBusInfo.get_formated_datetime_text()}. Ближайшая маршрутка' \
                             f' {destinations.value} {location.value.name} будет через' \
-                            f' {int(time_difference_in_minutes)} минут в {formated_bus_time}'
+                            f' {int(time_difference_in_minutes)} {a} в {formated_bus_time}'
                 logging.info('Getting nearest bus completed')
                 return f'{LanitBusInfo.get_formated_datetime_text()}. Сегодня маршруток {destinations.value}' \
                     f' от {location.value.name} уже не будет.'
