@@ -1,13 +1,10 @@
-from datetime import datetime, timedelta
-from settings import logging
 from enum import Enum
 
 from telebot import types, TeleBot
-from bus_schedule import LanitBusInfo, Locations, Destinations
 
 import settings
-import requests
-import re
+from bus_schedule import LanitBusInfo, Locations, Destinations
+from settings import logging
 
 
 def keyboard_after_all():
@@ -66,7 +63,7 @@ def select_location_step(call):
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "m" or call.data == "r" or call.data == 'p' or
-                            call.data == "m_o" or call.data == "r_o" or call.data == 'p_o')
+                                              call.data == "m_o" or call.data == "r_o" or call.data == 'p_o')
 def select_destination_step_metro(call):
     keyboard = types.InlineKeyboardMarkup()
     backbutton = types.InlineKeyboardButton(
@@ -77,7 +74,7 @@ def select_destination_step_metro(call):
                           text=LanitBusInfo.get_nearest_bus(
                               location=Locations.MARINA_ROSHHA if 'm' in call.data else Locations.RIZHSKAJA
                               if 'r' in call.data else Locations.PLOSHHAD_ILICHA,
-                              destinations=Destinations.TO_METRO if '_o' not in call.data else Destinations.TO_OFFICE),
+                              destination=Destinations.TO_METRO if '_o' not in call.data else Destinations.TO_OFFICE),
                           reply_markup=keyboard)
 
 
