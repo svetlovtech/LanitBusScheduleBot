@@ -42,14 +42,24 @@ class LanitBusInfo:
         elif response['time'][destination.value.api_string]['nearest'] is not False:
             message_format = f'Сейчас {settings.days[datetime.today().weekday()]} {response["info"]["now"]}. ' \
                              f'Ближайшая маршрутка {destination.value.translate} ' \
-                             f'{response["info"]["name"]} будет через {response["time"][destination.value.api_string]["left"]}' \
-                             f' в {response["time"][destination.value.api_string]["nearest"]}.'
+                             f'{response["info"]["name"]} будет через {response["time"][destination.value.api_string]["left"]} ' \
+                             f'в {response["time"][destination.value.api_string]["nearest"]}.'
+
+            if response["time"][destination.value.api_string]["next"] is not False:
+                message_format = f'{message_format}\n' \
+                                 f'Следующая будет в {response["time"][destination.value.api_string]["next"]}.'
+            if response['info']['warning'] is not False:
+                message_format = f"{message_format}\n" \
+                                 f"Предупреждение: {response['info'][destination.value.api_string]['warning']}"
             logging.debug(f'message_format {type(message_format)} = {message_format}')
             logging.info('Getting nearest bus completed')
             return message_format
         elif response['time'][destination.value.api_string]['nearest'] is False:
+
             message_format = f'Сейчас {settings.days[datetime.today().weekday()]} {response["info"]["now"]}. ' \
                              f'Сегодня маршруток {destination.value.translate} {response["info"]["name"]} не будет.'
+            if response['info']['warning'] is not False:
+                message_format = f"Предупреждение: {response['info'][destination.value.api_string]['warning']}"
             logging.debug(f'message_format {type(message_format)} = {message_format}')
             logging.info('Getting nearest bus completed')
             return message_format
