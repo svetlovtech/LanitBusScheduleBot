@@ -7,7 +7,7 @@ import settings
 
 
 class Locations(Enum):
-    MARINA_RISHHA = 'm'
+    MARINA_ROSHHA = 'm'
     PLOSHHAD_ILICHA = 'p'
     RIZHSKAJA = 'r'
 
