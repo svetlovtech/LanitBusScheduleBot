@@ -1,11 +1,9 @@
 from datetime import datetime, timedelta
 from settings import logging
-from typing import List
 from enum import Enum
 
-from telebot.types import ReplyKeyboardMarkup
-from telebot import types
-import telebot
+from telebot import types, TeleBot
+from bus_schedule import LanitBusInfo, Locations, Destinations
 
 import settings
 import requests
@@ -13,12 +11,13 @@ import re
 
 
 def keyboard_after_all():
-    markup = ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(
+        one_time_keyboard=True, resize_keyboard=True)
     markup.add("/start")
     return markup
 
 
-bot = telebot.TeleBot(settings.bot_token)
+bot = TeleBot(settings.bot_token)
 
 
 class Step(Enum):
@@ -76,7 +75,7 @@ def select_destination_step_metro(call):
 
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=LanitBusInfo.get_nearest_bus(
-                              location=Locations.MARINA_RISHHA if 'm' in call.data else Locations.RIZHSKAJA
+                              location=Locations.MARINA_ROSHHA if 'm' in call.data else Locations.RIZHSKAJA
                               if 'r' in call.data else Locations.PLOSHHAD_ILICHA,
                               destinations=Destinations.TO_METRO if '_o' not in call.data else Destinations.TO_OFFICE),
                           reply_markup=keyboard)
