@@ -24,7 +24,7 @@ class Destination:
 
 class Destinations(Enum):
     TO_METRO = Destination('to_metro', 'к')
-    TO_OFFICE = Destination('to_office', 'в')
+    TO_OFFICE = Destination('to_office', 'от')
 
 
 class LanitBusInfo:
