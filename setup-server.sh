@@ -4,4 +4,5 @@ python3 -m venv .env
 source .env/bin/activate
 pip3 install -r requirements.txt
 nohup python3 main.py > bot-log.txt &
+sleep 5
 tail -f bot-log.txt
