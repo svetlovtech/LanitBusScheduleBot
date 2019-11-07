@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
-from settings import logging
+from datetime import datetime
 from enum import Enum
 
 import requests
+
 import settings
+from settings import logging
 
 
 class Locations(Enum):
@@ -30,8 +31,6 @@ class LanitBusInfo:
     @staticmethod
     def get_nearest_bus(location: Locations, destination: Destinations) -> str:
         logging.info('Getting nearest bus started...')
-        print(location)
-        current_datetime = datetime.now() + timedelta(hours=settings.time_delta_shift)
         response = requests.get(
             f'https://transport.lanit.ru/api/times/{location.value}').json()
         if datetime.today().weekday() > 4:
