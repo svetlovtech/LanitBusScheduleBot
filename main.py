@@ -28,36 +28,38 @@ def select_location_step(call):
     if call.data == "mainmenu":
         keyboardmain = types.InlineKeyboardMarkup(row_width=2)
         first_button = types.InlineKeyboardButton(
-            text="к метро", callback_data="metro")
+            text="К метро", callback_data="metro")
         second_button = types.InlineKeyboardButton(
-            text="в офис", callback_data="office")
+            text="В офис", callback_data="office")
         keyboardmain.add(first_button, second_button)
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Куда поедем?",
                               reply_markup=keyboardmain)
 
     if call.data == "metro":
-        keyboard = types.InlineKeyboardMarkup()
+        keyboard = types.InlineKeyboardMarkup(row_width=2)
         rele1 = types.InlineKeyboardButton(
             text="Марьина роща", callback_data="m")
         rele2 = types.InlineKeyboardButton(text="Рижская", callback_data="r")
         rele3 = types.InlineKeyboardButton(
             text="Площадь Ильича", callback_data="p")
         backbutton = types.InlineKeyboardButton(
-            text="назад", callback_data="mainmenu")
-        keyboard.add(rele1, rele2, rele3, backbutton)
+            text="Назад", callback_data="mainmenu")
+        keyboard.row(rele3)
+        keyboard.add(rele1, rele2, backbutton)
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                               text='Какое метро нужно?', reply_markup=keyboard)
 
     if call.data == "office":
-        keyboard = types.InlineKeyboardMarkup()
+        keyboard = types.InlineKeyboardMarkup(row_width=2)
         rele1 = types.InlineKeyboardButton(
             text="Марьина роща", callback_data="m_o")
         rele2 = types.InlineKeyboardButton(text="Рижская", callback_data="r_o")
         rele3 = types.InlineKeyboardButton(
             text="Площадь Ильича", callback_data="p_o")
         backbutton = types.InlineKeyboardButton(
-            text="назад", callback_data="mainmenu")
-        keyboard.add(rele1, rele2, rele3, backbutton)
+            text="Назад", callback_data="mainmenu")
+        keyboard.row(rele3)
+        keyboard.add(rele1, rele2, backbutton)
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                               text='С какого метро едем?', reply_markup=keyboard)
 
@@ -82,9 +84,9 @@ def select_destination_step_metro(call):
 def on_start(message):
     keyboardmain = types.InlineKeyboardMarkup(row_width=2)
     first_button = types.InlineKeyboardButton(
-        text="к метро", callback_data="metro")
+        text="К метро", callback_data="metro")
     second_button = types.InlineKeyboardButton(
-        text="в офис", callback_data="office")
+        text="В офис", callback_data="office")
     keyboardmain.add(first_button, second_button)
     bot.send_message(message.chat.id, "Куда поедем?",
                      reply_markup=keyboardmain)
