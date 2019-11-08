@@ -79,7 +79,7 @@ def select_destination_step_metro(call):
     backbutton = types.InlineKeyboardButton(
         text="Попробовать еще раз", callback_data="mainmenu")
     three_button = types.InlineKeyboardButton(
-        text="Полное расписание", callback_data=f"resources/images/fullSchedule_{call.data}")
+        text="Полное расписание", callback_data=f"fullSchedule_{call.data}")
     keyboard.add(backbutton, three_button)
 
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
