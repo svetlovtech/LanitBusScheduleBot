@@ -24,7 +24,7 @@ class Step(Enum):
 
 
 @bot.callback_query_handler(func=lambda
-        call: call.data == "metro" or call.data == "office" or call.data == "mainmenu" or call.data[:4] == "full")
+        call: call.data in ["metro", "office", "mainmenu"] or call.data[:4] == "full")
 def select_location_step(call):
     if call.data == "mainmenu":
         keyboardmain = types.InlineKeyboardMarkup(row_width=2)
@@ -69,12 +69,11 @@ def select_location_step(call):
         backbutton = types.InlineKeyboardButton(
             text="Попробовать ещё раз", callback_data="mainmenu")
         keyboard.add(backbutton)
-        img = open(f'{call.data}.jpg', 'rb')
-        bot.send_photo(chat_id=call.message.chat.id, photo=img)
+        with open(f'{call.data}.jpg', 'rb') as img:
+            bot.send_photo(chat_id=call.message.chat.id, photo=img)
 
 
-@bot.callback_query_handler(func=lambda call: call.data == "m" or call.data == "r" or call.data == 'p' or
-                                              call.data == "m_o" or call.data == "r_o" or call.data == 'p_o')
+@bot.callback_query_handler(func=lambda call: call.data in ["m", "r", 'p', "m_o", "r_o", 'p_o'])
 def select_destination_step_metro(call):
     keyboard = types.InlineKeyboardMarkup()
     backbutton = types.InlineKeyboardButton(
@@ -115,7 +114,8 @@ def send_welcome(message):
     btn_my_site = types.InlineKeyboardButton(text='GitHub', url='https://github.com/32-52/LanitBusScheduleBot')
     markup.add(switch_button, btn_my_site)
     bot.send_message(message.chat.id,
-                     "Если возникли проблемы с ботом или есть предложения по улучшению, то свяжитесь со мной🤔\nЕсли этот бот оказался полезен, то буду очень рад звездочке⭐",
+                     "Если возникли проблемы с ботом или есть предложения по улучшению, то свяжитесь со мной🤔\n"
+                     "Если этот бот оказался полезен, то буду очень рад звездочке⭐",
                      reply_markup=markup)
 
 
