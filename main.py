@@ -69,7 +69,7 @@ def select_location_step(call):
         backbutton = types.InlineKeyboardButton(
             text="Попробовать ещё раз", callback_data="mainmenu")
         keyboard.add(backbutton)
-        with open(f'{call.data}.jpg', 'rb') as img:
+        with open(f'resources/images/{call.data}.jpg', 'rb') as img:
             bot.send_photo(chat_id=call.message.chat.id, photo=img)
 
 
