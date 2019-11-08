@@ -23,7 +23,8 @@ class Step(Enum):
     GET_SCHEDULE = 'GET_SCHEDULE'
 
 
-@bot.callback_query_handler(func=lambda call: call.data == "metro" or call.data == "office" or call.data == "mainmenu")
+@bot.callback_query_handler(func=lambda
+        call: call.data == "metro" or call.data == "office" or call.data == "mainmenu" or call.data[:4] == "full")
 def select_location_step(call):
     if call.data == "mainmenu":
         keyboardmain = types.InlineKeyboardMarkup(row_width=2)
@@ -63,6 +64,14 @@ def select_location_step(call):
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                               text='С какого метро едем?', reply_markup=keyboard)
 
+    if call.data[:4] == "full":
+        keyboard = types.InlineKeyboardMarkup()
+        backbutton = types.InlineKeyboardButton(
+            text="Попробовать ещё раз", callback_data="mainmenu")
+        keyboard.add(backbutton)
+        img = open(f'{call.data}.jpg', 'rb')
+        bot.send_photo(chat_id=call.message.chat.id, photo=img)
+
 
 @bot.callback_query_handler(func=lambda call: call.data == "m" or call.data == "r" or call.data == 'p' or
                                               call.data == "m_o" or call.data == "r_o" or call.data == 'p_o')
@@ -70,7 +79,9 @@ def select_destination_step_metro(call):
     keyboard = types.InlineKeyboardMarkup()
     backbutton = types.InlineKeyboardButton(
         text="Попробовать еще раз", callback_data="mainmenu")
-    keyboard.add(backbutton)
+    three_button = types.InlineKeyboardButton(
+        text="Полное расписание", callback_data=f"fullSchedule_{call.data}")
+    keyboard.add(backbutton, three_button)
 
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                           text=LanitBusInfo.get_nearest_bus(
@@ -99,10 +110,13 @@ def echo_message(message):
 
 @bot.message_handler(commands=['help'])
 def send_welcome(message):
+    markup = types.InlineKeyboardMarkup()
+    switch_button = types.InlineKeyboardButton(text='Создатель', url="https://t.me/ASvetlov92")
+    btn_my_site = types.InlineKeyboardButton(text='GitHub', url='https://github.com/32-52/LanitBusScheduleBot')
+    markup.add(switch_button, btn_my_site)
     bot.send_message(message.chat.id,
-                     'Если возникли проблемы с ботом или есть предложения по улучшению, то свяжитесь со мной'
-                     ' @ASvetlov92.\nЕсли этот бот оказался полезен, то буду очень рад звездочке'
-                     ' https://github.com/32-52/LanitBusScheduleBot')
+                     "Если возникли проблемы с ботом или есть предложения по улучшению, то свяжитесь со мной🤔\nЕсли этот бот оказался полезен, то буду очень рад звездочке⭐",
+                     reply_markup=markup)
 
 
 if __name__ == "__main__":
