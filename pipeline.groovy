@@ -1,3 +1,4 @@
+currentBuild.description = "LanitBusScheduleBot deploy #${BUILD_NUMBER}, branch:" + params.BRANCH_NAME + " token:" + params.TELEGRAM_TOKEN
 pipeline {
     agent any
     
@@ -26,10 +27,10 @@ pipeline {
                     echo 'Stopping old container project ...'
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                         sh label: '', script: 'sudo -S docker stop ' + 'lanitbusschedulebot-' + params.TELEGRAM_TOKEN
+                        sh label: '', script: 'sudo -S docker rm ' + 'lanitbusschedulebot-' + params.TELEGRAM_TOKEN 
                     }
                     sh label: '', script: 'sudo -S docker container prune'
                     sh label: '', script: '(echo "y") | sudo -S docker system prune'
-                    sh label: '', script: 'sudo -S docker rm ' + 'lanitbusschedulebot-' + params.TELEGRAM_TOKEN 
                     echo 'Stopping old container project complete'
                 }
             }
