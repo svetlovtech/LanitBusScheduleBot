@@ -16,11 +16,9 @@ days = ["понедельник", "вторник", "среда", "четвер�
 
 bot_token = None
 debug_mode = None
-time_delta_shift = None
 
 try:
     bot_token = os.environ['TELEGRAM_TOKEN']
     debug_mode = bool(os.environ['DEBUG_MODE'])
-    time_delta_shift = int(os.environ['TIME_DELTA_SHIFT'])
 except KeyError as e:
     logging.error(e)

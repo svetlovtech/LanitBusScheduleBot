@@ -1,6 +1,6 @@
 from models import Destinations, Locations
 from settings import logging, time_delta_shift
-import datetime
+from datetime import datetime
 import requests
 import settings
 
@@ -24,16 +24,14 @@ class LanitBusInfo:
         elif destination == Destinations.TO_OFFICE:
             destination_data = 'to_office'
             
-        current_datetime = datetime.datetime.now() + datetime.timedelta(hours=time_delta_shift)
-        
         response = requests.get(
             f'https://transport.lanit.ru/api/times/{location_data}').json()
 
-        message_format = f'Сейчас {settings.days[current_datetime.today().weekday()]} {response["info"]["now"]}\n' \
+        message_format = f'Сейчас {settings.days[datetime.today().weekday()]} {response["info"]["now"]}\n' \
                          f'Метро: {location.value}\n' \
                          f'Куда: {destination.value}\n'
 
-        if current_datetime.today().weekday() > 4:
+        if datetime.today().weekday() > 4:
             logging.debug(
                 f'message_format {type(message_format)} = {message_format}')
             logging.info('Getting nearest bus completed')
