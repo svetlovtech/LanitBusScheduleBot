@@ -11,15 +11,16 @@ logging.basicConfig(
     ])
 
 user_sessions = {}
-time_delta_shift = 3
 days = ["понедельник", "вторник", "среда", "четверг", "пятница",
         "суббота", "воскресенье"]
 
 bot_token = None
 debug_mode = None
+time_delta_shift = None
 
 try:
     bot_token = os.environ['TELEGRAM_TOKEN']
     debug_mode = os.environ['DEBUG_MODE']
+    time_delta_shift = os.environ['TIME_DELTA_SHIFT']
 except KeyError as e:
     logging.error(e)
