@@ -15,6 +15,9 @@ time_delta_shift = 3
 days = ["понедельник", "вторник", "среда", "четверг", "пятница",
         "суббота", "воскресенье"]
 
+bot_token = None
+debug_mode = None
+
 try:
     bot_token = os.environ['TELEGRAM_TOKEN']
     debug_mode = os.environ['DEBUG_MODE']
