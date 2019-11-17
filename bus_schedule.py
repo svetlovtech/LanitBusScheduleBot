@@ -1,5 +1,5 @@
 from models import Destinations, Locations
-from settings import logging, time_delta_shift
+from settings import logging
 from datetime import datetime
 import requests
 import settings
