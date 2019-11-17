@@ -1,4 +1,4 @@
-from settings import logging, user_session_debug_mode, user_sessions
+from settings import logging, debug_mode, user_sessions
 from models import Models, Locations, Destinations
 from bus_schedule import LanitBusInfo
 from telebot import types, TeleBot
@@ -21,7 +21,7 @@ class View():
         logging.debug(
             f'{type(self).__name__} | Creating keyboard header started...')
         buttons = []
-        if user_session_debug_mode:
+        if debug_mode:
             user_session_button = types.InlineKeyboardButton(
                 text="user session", callback_data=encode_data(GetUserInfo.__name__))
             buttons.append(user_session_button)
