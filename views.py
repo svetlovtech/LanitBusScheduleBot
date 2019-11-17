@@ -1,7 +1,7 @@
 from settings import logging, user_session_debug_mode, user_sessions
 from models import Models, Locations, Destinations
+from bus_schedule import LanitBusInfo
 from telebot import types, TeleBot
-from uuid import uuid4
 
 # -=-=-=-=-=-=-=-=-=-=-=-=- COMMONS VIEWS -=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -53,7 +53,7 @@ class View():
 
     def _set_message_text(self):
         return 'BASIC VIEW'
-    
+
     def get_message_text(self):
         return self._message_text
 
@@ -155,12 +155,11 @@ class ShowSheduleResult(GetBusSchedule):
     def _create_keyboard_content(self):
         shedule_site_button = types.InlineKeyboardButton(
             text='Посмотреть на сайте', url='https://transport.lanit.ru/')
-        next_bus_button = types.InlineKeyboardButton(
-            text='Когда следующая?', callback_data=encode_data(HelpMenu.__name__))
-        self._keyboard.add(shedule_site_button, next_bus_button)
+        self._keyboard.add(shedule_site_button)
 
     def _set_message_text(self):
-        return "Парам пам пам"
+        return LanitBusInfo.get_nearest_bus(location=self._user_session['Locations'],
+                                            destination=self._user_session['Destinations'])
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
