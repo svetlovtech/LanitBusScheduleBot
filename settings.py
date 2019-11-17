@@ -20,7 +20,7 @@ time_delta_shift = None
 
 try:
     bot_token = os.environ['TELEGRAM_TOKEN']
-    debug_mode = os.environ['DEBUG_MODE']
-    time_delta_shift = os.environ['TIME_DELTA_SHIFT']
+    debug_mode = bool(os.environ['DEBUG_MODE'])
+    time_delta_shift = int(os.environ['TIME_DELTA_SHIFT'])
 except KeyError as e:
     logging.error(e)
