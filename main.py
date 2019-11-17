@@ -47,10 +47,9 @@ def callback_handler(call):
 
 
 if __name__ == "__main__":
-    bot.polling(none_stop=True)
-    # while True:
-    #     try:
-    #         bot.polling(none_stop=True)
-    #     except Exception as e:
-    #         logging.warning(e)
-    #         continue
+    while True:
+        try:
+            bot.polling(none_stop=True)
+        except Exception as e:
+            logging.warning(e)
+            continue
