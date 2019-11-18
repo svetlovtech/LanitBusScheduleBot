@@ -21,10 +21,10 @@ class View():
         logging.debug(
             f'{type(self).__name__} | Creating keyboard header started...')
         buttons = []
-        if debug_mode:
-            user_session_button = types.InlineKeyboardButton(
-                text="user session", callback_data=encode_data(GetUserInfo.__name__))
-            buttons.append(user_session_button)
+        # if debug_mode:
+        #     user_session_button = types.InlineKeyboardButton(
+        #         text="user session", callback_data=encode_data(GetUserInfo.__name__))
+        #     buttons.append(user_session_button)
         self._keyboard.add(*buttons)
         logging.debug(
             f'{type(self).__name__} | Creating keyboard header completed')
