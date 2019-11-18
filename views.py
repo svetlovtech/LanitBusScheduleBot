@@ -183,7 +183,7 @@ def decode_data(data: str):
         logging.debug(
             f'model_value_str {type(model_value_str)} = {model_value_str}')
     except IndexError:
-        return(StartMenu(), None)
+        return(StartMenu, None)
 
     view_class = None
     model_class = None
