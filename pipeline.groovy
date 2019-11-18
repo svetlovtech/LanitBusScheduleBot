@@ -39,7 +39,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: params.TELEGRAM_TOKEN, variable: 'TOKEN')]) {
                     echo 'Running project ...'
-                    sh label: '', script: 'BUILD_ID=dontKillMe sudo docker run -d -e TELEGRAM_TOKEN=$TOKEN -e DEBUG_MODE=$DEBUG_MODE -e TIME_DELTA_SHIFT=$TIME_DELTA_SHIFT --name lanitbusschedulebot-' + params.TELEGRAM_TOKEN + ' lanitbusschedulebot:' + params.TELEGRAM_TOKEN
+                    sh label: '', script: 'BUILD_ID=dontKillMe sudo docker run -d -e TELEGRAM_TOKEN=$TOKEN -e DEBUG_MODE=$DEBUG_MODE --name lanitbusschedulebot-' + params.TELEGRAM_TOKEN + ' lanitbusschedulebot:' + params.TELEGRAM_TOKEN
                     echo 'Running project complete'
                 }
             }
