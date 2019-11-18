@@ -10,11 +10,15 @@ logging.basicConfig(
         logging.StreamHandler()
     ])
 
-try:
-    bot_token = os.environ['TELEGRAM_TOKEN']
-except KeyError as e:
-    logging.error(e)
-    bot_token = 'token'
-time_delta_shift = 3
+user_sessions = {}
 days = ["понедельник", "вторник", "среда", "четверг", "пятница",
         "суббота", "воскресенье"]
+
+bot_token = None
+debug_mode = None
+
+try:
+    bot_token = os.environ['TELEGRAM_TOKEN']
+    debug_mode = bool(os.environ['DEBUG_MODE'])
+except KeyError as e:
+    logging.error(e)
