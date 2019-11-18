@@ -168,18 +168,22 @@ class ShowSheduleResult(GetBusSchedule):
 
 def decode_data(data: str):
     logging.debug(f'data {type(data)} = {data}')
-    splitted_data = data.split('|')
-    view_class_name_str = splitted_data[0]
-    logging.debug(
-        f'view_class_name_str {type(view_class_name_str)} = {view_class_name_str}')
 
-    model_class_name_str = splitted_data[1]
-    logging.debug(
-        f'model_class_name_str {type(model_class_name_str)} = {model_class_name_str}')
+    try:
+        splitted_data = data.split('|')
+        view_class_name_str = splitted_data[0]
+        logging.debug(
+            f'view_class_name_str {type(view_class_name_str)} = {view_class_name_str}')
 
-    model_value_str = splitted_data[2]
-    logging.debug(
-        f'model_value_str {type(model_value_str)} = {model_value_str}')
+        model_class_name_str = splitted_data[1]
+        logging.debug(
+            f'model_class_name_str {type(model_class_name_str)} = {model_class_name_str}')
+
+        model_value_str = splitted_data[2]
+        logging.debug(
+            f'model_value_str {type(model_value_str)} = {model_value_str}')
+    except IndexError:
+        return(StartMenu(), None)
 
     view_class = None
     model_class = None
