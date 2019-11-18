@@ -13,6 +13,14 @@ def help_handler(message):
     bot.send_message(chat_id=message.chat.id,
                      text=view.get_message_text(),
                      reply_markup=view.get_keyboard())
+    
+
+@bot.message_handler(commands=['start'])
+def help_handler(message):
+    view = views.StartMenu()
+    bot.send_message(chat_id=message.chat.id,
+                     text=view.get_message_text(),
+                     reply_markup=view.get_keyboard())
 
 
 @bot.callback_query_handler(func=lambda call: True)
