@@ -19,6 +19,6 @@ debug_mode = None
 
 try:
     bot_token = os.environ['TELEGRAM_TOKEN']
-    debug_mode = bool(os.environ['DEBUG_MODE'])
+    debug_mode = 'true' == os.environ['DEBUG_MODE']
 except KeyError as e:
     logging.error(e)
